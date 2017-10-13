@@ -1,17 +1,20 @@
 import auth0 from 'auth0-js'
 import { AUTH_CONFIG } from './auth0-variables'
 import EventEmitter from 'EventEmitter'
+import decode from 'jwt-decode'
 import router from './../router'
 
 export default class AuthService {
   authenticated = this.isAuthenticated()
   authNotifier = new EventEmitter()
+  admin = this.isAdmin()
 
   constructor () {
     this.login = this.login.bind(this)
     this.setSession = this.setSession.bind(this)
     this.logout = this.logout.bind(this)
     this.isAuthenticated = this.isAuthenticated.bind(this)
+    this.isAdmin = this.isAdmin.bind(this)
   }
 
   auth0 = new auth0.WebAuth({
@@ -48,7 +51,7 @@ export default class AuthService {
     localStorage.setItem('access_token', authResult.accessToken)
     localStorage.setItem('id_token', authResult.idToken)
     localStorage.setItem('expires_at', expiresAt)
-    this.authNotifier.emit('authChange', { authenticated: true })
+    this.authNotifier.emit('authChange', { authenticated: true, admin: this.isAdmin() })
   }
 
   logout () {
@@ -67,5 +70,19 @@ export default class AuthService {
     // access token's expiry time
     let expiresAt = JSON.parse(localStorage.getItem('expires_at'))
     return new Date().getTime() < expiresAt
+  }
+
+  getRole () {
+    const namespace = 'http://myapp.example.com'
+    const idToken = localStorage.getItem('id_token')
+    if (idToken) {
+      var role = decode(idToken)[`${namespace}/role`] || null
+      console.log(role)
+      return role
+    }
+  }
+
+  isAdmin () {
+    return this.getRole() === 'admin'
   }
 }

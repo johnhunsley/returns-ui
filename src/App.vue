@@ -6,19 +6,24 @@
           <a class="navbar-brand" href="#"></a>
 
           <router-link :to="'/'"
-            class="btn btn-primary btn-margin">
+            class="btn btn-primary btn-margin btn-green">
               Home
           </router-link>
 
           <button
-            class="btn btn-primary btn-margin"
+            class="btn btn-primary btn-margin btn-green"
             v-if="!authenticated"
             @click="login()">
               Log In
           </button>
 
+          <router-link :to="'/admin'" v-if="authenticated && admin"
+          class="btn btn-primary btn-margin btn-green">
+            Admin
+          </router-link>
+
           <button
-            class="btn btn-primary btn-margin"
+            class="btn btn-primary btn-margin btn-green"
             v-if="authenticated"
             @click="logout()">
               Log Out
@@ -31,7 +36,8 @@
     <div class="container">
       <router-view
         :auth="auth"
-        :authenticated="authenticated">
+        :authenticated="authenticated"
+        :admin="admin">
       </router-view>
     </div>
   </div>
@@ -42,17 +48,19 @@ import AuthService from './auth/AuthService'
 
 const auth = new AuthService()
 
-const { login, logout, authenticated, authNotifier } = auth
+const { login, logout, authenticated, admin, authNotifier } = auth
 
 export default {
   name: 'app',
   data () {
     authNotifier.on('authChange', authState => {
       this.authenticated = authState.authenticated
+      this.admin = authState.admin
     })
     return {
       auth,
-      authenticated
+      authenticated,
+      admin
     }
   },
   methods: {
@@ -67,5 +75,8 @@ export default {
 
 .btn-margin {
   margin-top: 7px
+}
+.btn-green {
+  background-color: green
 }
 </style>
