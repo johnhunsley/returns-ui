@@ -6,24 +6,29 @@
           <a class="navbar-brand" href="#"></a>
 
           <router-link :to="'/'"
-            class="btn btn-primary btn-margin btn-green">
+            class="btn btn-primary btn-margin">
               Home
           </router-link>
 
           <button
-            class="btn btn-primary btn-margin btn-green"
+            class="btn btn-primary btn-margin"
             v-if="!authenticated"
             @click="login()">
               Log In
           </button>
 
+          <router-link :to="'/return'" v-if="authenticated"
+            class="btn btn-primary btn-margin">
+            Submit Return
+          </router-link>
+
           <router-link :to="'/admin'" v-if="authenticated && admin"
-          class="btn btn-primary btn-margin btn-green">
+          class="btn btn-primary btn-margin">
             Admin
           </router-link>
 
           <button
-            class="btn btn-primary btn-margin btn-green"
+            class="btn btn-primary btn-margin"
             v-if="authenticated"
             @click="logout()">
               Log Out
@@ -75,8 +80,5 @@ export default {
 
 .btn-margin {
   margin-top: 7px
-}
-.btn-green {
-  background-color: green
 }
 </style>

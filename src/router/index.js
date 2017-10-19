@@ -2,12 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
 import Admin from '@/components/Admin'
+import Return from '@/components/Return'
 import Callback from '@/components/Callback'
-import AuthService from './../auth/AuthService'
 
 Vue.use(Router)
-
-const auth = new AuthService()
 
 const router = new Router({
   mode: 'history',
@@ -28,14 +26,13 @@ const router = new Router({
       path: '/admin',
       name: 'Admin',
       component: Admin,
-      props: true,
-      beforeEnter: (to, from, next) => {
-        if (!auth.isAuthenticated() || !auth.isAdmin()) {
-          next(false)
-        } else {
-          next()
-        }
-      }
+      props: true
+    },
+    {
+      path: '/return',
+      name: 'Return',
+      component: Return,
+      props: true
     },
     {
       path: '*',
