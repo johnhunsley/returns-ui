@@ -1,10 +1,7 @@
 <template>
   <div>
     <h4 v-if="authenticated">
-        You are logged in as {{auth.getNickName()}}
-    </h4>
-    <h4 v-if="authenticated && admin">
-      You are Admin
+        Hello {{auth.getNickName()}} <span v-if="authenticated && admin">. You have admin priviledges</span>
     </h4>
     <h4 v-if="!authenticated">
       You are not logged in! Please <a @click="auth.login()">Log In</a> to continue.
