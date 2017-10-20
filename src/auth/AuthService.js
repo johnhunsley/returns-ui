@@ -23,7 +23,7 @@ export default class AuthService {
     redirectUri: AUTH_CONFIG.callbackUrl,
     audience: `https://${AUTH_CONFIG.domain}/userinfo`,
     responseType: 'token id_token',
-    scope: 'openid'
+    scope: 'openid profile'
   })
 
   login () {
@@ -82,7 +82,17 @@ export default class AuthService {
     }
   }
 
+  getNickName () {
+    const namespace = 'nickname'
+    const idToken = localStorage.getItem('id_token')
+    if (idToken) {
+      var nick = decode(idToken)[`${namespace}`] || null
+      console.log(nick)
+      return nick
+    }
+  }
+
   isAdmin () {
-    return this.getRole() === 'admin'
+    return this.getRole() === 'ROLE_SERVICE_PROVIDER'
   }
 }

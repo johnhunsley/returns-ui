@@ -1,9 +1,9 @@
 <template>
   <div>
     <h4 v-if="authenticated">
-        You are logged in!
+        You are logged in as {{auth.getNickName()}}
     </h4>
-    <h4 v-if="admin">
+    <h4 v-if="authenticated && admin">
       You are Admin
     </h4>
     <h4 v-if="!authenticated">
