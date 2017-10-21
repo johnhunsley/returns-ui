@@ -92,6 +92,43 @@ To Time: HH&nbsp;<select v-model="tohh">
   </select>
   </p>
   </div>
+  <div v-if="fishery">
+  <p>
+    <table>
+      <tr>
+        <th>Species</th>
+        <th>Number Caught</th>
+        <th>Average Size</th
+        <th>&nbsp;&nbsp;</th>
+      </tr>
+      <tr>
+        <td>
+          <select v-model="species">
+            <option value=''>--Select Species--</option>
+            <option>Barbel</option>
+            <option>Chub</option>
+            <option>Pike</option>
+            <option>Carp</option>
+            <option>Roach</option>
+            <option>Dace</option>
+            <option>Bream</option>
+            <option>Eel</option>
+            <option>Perch</option>
+          </select>
+        </td>
+        <td>
+          <input type="text" size="3" v-model="count"/>
+        </td>
+        <td>
+
+        </td>
+        <td>
+          <button  class="btn btn-primary btn-margin" @click="add()">Add</button>
+        </td>
+      </tr>
+    </table>
+  </p>
+  </div>
 </body>
 </div>
 </template>
@@ -112,6 +149,11 @@ export default {
       frommm: 0,
       tohh: 0,
       tomm: 0,
+      catches: [],
+      species: '',
+      count: 0,
+      pounds: 0,
+      ounces: 0,
       state: {
         fromdate: new Date(),
         todate: new Date(),
@@ -132,5 +174,20 @@ a {
   font-family: arial;
   font-size: 18px;
   background-color: lightblue;
+},
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.decorated:nth-child(even) {
+  background-color: #dddddd;
 }
 </style>

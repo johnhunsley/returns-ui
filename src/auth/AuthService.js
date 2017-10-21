@@ -82,6 +82,16 @@ export default class AuthService {
     }
   }
 
+  getMemberId () {
+    const namespace = 'http://myapp.example.com'
+    const idToken = localStorage.getItem('id_token')
+    if (idToken) {
+      var memberid = decode(idToken)[`${namespace}/memberid`] || null
+      console.log(memberid)
+      return memberid
+    }
+  }
+
   getNickName () {
     const namespace = 'nickname'
     const idToken = localStorage.getItem('id_token')
