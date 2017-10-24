@@ -117,16 +117,37 @@ To Time: HH&nbsp;<select v-model="tohh">
           </select>
         </td>
         <td>
-          <input type="text" size="3" v-model="count"/>
+          <button @click="decrement">-</button>
+          <vue-numeric v-bind:min="0" v-bind:minus="false" v-bind:max="100"  v-model="count" size="1"></vue-numeric>
+          <button @click="increment">+</button>
         </td>
         <td>
-
+          Pounds&nbsp;
+          <button @click="decrementP">-</button>
+          <vue-numeric v-bind:min="0" v-bind:minus="false" v-bind:max="100"  v-model="pounds" size="1"></vue-numeric>
+          <button @click="incrementP">+</button>&nbsp;&nbsp;
+          Ounces&nbsp;
+          <button @click="decrementO">-</button>
+          <vue-numeric v-bind:min="0" v-bind:minus="false" v-bind:max="15"  v-model="ounces" size="1"></vue-numeric>
+          <button @click="incrementO">+</button>
         </td>
         <td>
           <button  class="btn btn-primary btn-margin" @click="add()">Add</button>
         </td>
       </tr>
     </table>
+  </p>
+  <p>
+    <table>
+      <tr v-for="catchx in catches"  v-on:remove="cacthes.splice(index, 1)">
+        <td>{{catchx.species}}</td>
+        <td>{{catchx.count}}</td>
+        <td>{{catchx.pounds}}lbs</td>
+        <td>{{catchx.ounces}}oz</td>
+        <td><button @click="$emit('remove')">X</button></td>
+      </tr>
+    </table>
+    </li>
   </p>
   </div>
 </body>
@@ -135,11 +156,13 @@ To Time: HH&nbsp;<select v-model="tohh">
 
 <script>
 import datepicker from 'vuejs-datepicker'
+import VueNumeric from 'vue-numeric'
 
 export default {
   name: 'return',
   components: {
-    datepicker
+    datepicker,
+    VueNumeric
   },
   props: ['auth', 'authenticated', 'admin'],
   data () {
@@ -161,6 +184,42 @@ export default {
           from: new Date(2017, 10, 21)
         }
       }
+    }
+  },
+  methods: {
+    getSource: function () {
+      return '../assets/' + this.species + '.gif'
+    },
+    increment: function () {
+      this.count++
+    },
+    decrement: function () {
+      this.count--
+      if (this.count < 0) this.count = 0
+    },
+    incrementP: function () {
+      this.pounds++
+      if (this.pounds > 100) this.pounds = 100
+    },
+    decrementP: function () {
+      this.pounds--
+      if (this.pounds < 0) this.pounds = 0
+    },
+    incrementO: function () {
+      this.ounces++
+      if (this.ounces > 15) this.ounces = 15
+    },
+    decrementO: function () {
+      this.ounces--
+      if (this.ounces < 0) this.ounces = 0
+    },
+    add: function () {
+      this.catches.push({
+        species: this.species,
+        count: this.count,
+        pounds: this.pounds,
+        ounces: this.ounces
+      })
     }
   }
 }
