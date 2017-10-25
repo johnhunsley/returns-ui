@@ -1,7 +1,7 @@
 <template>
 <div>
 <h4 v-if="authenticated">
-  <p>Submit a catch return</p>
+  <p>Select a fishery to submit a catch return</p>
 </h4>
 <h4 v-if="!authenticated">
   You are not logged in! Please <a @click="auth.login()">Log In</a> to continue.
@@ -21,9 +21,9 @@
   </div>
   <div v-if="fishery">
     <p>Enter details for catches at {{fishery}}</p>
-    <p>From Date: <datepicker :value="state.fromdate" :disabled="state.disabled"></datepicker></p>
+    <p>Fished from date: <datepicker :value="state.fromdate" :disabled="state.disabled"></datepicker></p>
     <p>
-      From Time: HH&nbsp;<select v-model="fromhh">
+      Fished from time: HH&nbsp;<select v-model="fromhh">
                       <option value="0" selected>00</option>
                       <option value="1">01</option>
                       <option value="2">02</option>
@@ -56,9 +56,9 @@
                         <option>45</option>
                       </select>
     </p>
-  <p>To Date: <datepicker :value="state.todate" :disabled="state.disabled"></datepicker></p>
+  <p>Fished to date: <datepicker :value="state.todate" :disabled="state.disabled"></datepicker></p>
 <p>
-To Time: HH&nbsp;<select v-model="tohh">
+Fished to time: HH&nbsp;<select v-model="tohh">
   <option value="0" selected>00</option>
   <option value="1">01</option>
   <option value="2">02</option>
@@ -152,7 +152,7 @@ To Time: HH&nbsp;<select v-model="tohh">
   <p>
     <button v-if="!showNote" class="btn btn-primary btn-margin" @click="showNote = true">Add Note</button>
     <button v-if="showNote" class="btn btn-primary btn-margin" @click="showNote = false">Hide Note</button>
-    <button class="btn btn-primary btn-margin" @click="">Submit Return</button>
+    <button v-if="catches.length > 0" class="btn btn-primary btn-margin" @click="">Submit Return</button>
   </p>
   </div>
 </body>
@@ -183,7 +183,7 @@ export default {
       pounds: 0,
       ounces: 0,
       speciesOptions: [
-        'Barbel', 'Chub', 'Perch', 'Pike', 'Roach', 'Dace'
+        'Barbel', 'Carp', 'Chub', 'Dace', 'Eel', 'Perch', 'Pike', 'Roach'
       ],
       state: {
         fromdate: new Date(),
