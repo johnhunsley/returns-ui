@@ -105,15 +105,9 @@ To Time: HH&nbsp;<select v-model="tohh">
         <td>
           <select v-model="species">
             <option value=''>--Select Species--</option>
-            <option>Barbel</option>
-            <option>Chub</option>
-            <option>Pike</option>
-            <option>Carp</option>
-            <option>Roach</option>
-            <option>Dace</option>
-            <option>Bream</option>
-            <option>Eel</option>
-            <option>Perch</option>
+            <option v-for="option in speciesOptions" v-bind:value="option">
+              {{ option }}
+            </option>
           </select>
         </td>
         <td>
@@ -138,16 +132,27 @@ To Time: HH&nbsp;<select v-model="tohh">
     </table>
   </p>
   <p>
-    <table>
-      <tr v-for="catchx in catches"  v-on:remove="cacthes.splice(index, 1)">
+    <table v-if="catches.length > 0">
+      <tr>
+        <th>Catch List</th>
+      </tr>
+      <tr v-for="(catchx, index) in catches">
         <td>{{catchx.species}}</td>
         <td>{{catchx.count}}</td>
         <td>{{catchx.pounds}}lbs</td>
         <td>{{catchx.ounces}}oz</td>
-        <td><button @click="$emit('remove')">X</button></td>
+        <td><button class="btn btn-primary btn-margin" @click="removeCatch(index)">Remove</button></td>
       </tr>
     </table>
     </li>
+  </p>
+  <p>
+    <textarea v-if="showNote" rows="6" cols="100" placeholder="Detail specimen catches and any other details....."/>
+  </p>
+  <p>
+    <button v-if="!showNote" class="btn btn-primary btn-margin" @click="showNote = true">Add Note</button>
+    <button v-if="showNote" class="btn btn-primary btn-margin" @click="showNote = false">Hide Note</button>
+    <button class="btn btn-primary btn-margin" @click="">Submit Return</button>
   </p>
   </div>
 </body>
@@ -177,13 +182,18 @@ export default {
       count: 0,
       pounds: 0,
       ounces: 0,
+      speciesOptions: [
+        'Barbel', 'Chub', 'Perch', 'Pike', 'Roach', 'Dace'
+      ],
       state: {
         fromdate: new Date(),
         todate: new Date(),
         disabled: {
           from: new Date(2017, 10, 21)
         }
-      }
+      },
+      showNote: false,
+      note: ''
     }
   },
   methods: {
@@ -214,12 +224,27 @@ export default {
       if (this.ounces < 0) this.ounces = 0
     },
     add: function () {
-      this.catches.push({
-        species: this.species,
-        count: this.count,
-        pounds: this.pounds,
-        ounces: this.ounces
-      })
+      if (this.species === '') {
+        alert('Select a species before adding to your catch list')
+      } else if (this.count < 1) {
+        alert('Add number of ' + this.species + ' caught')
+      } else if (this.pounds < 1 && this.ounces < 1) {
+        alert('Add average weight of ' + this.species + ' caught')
+      } else {
+        this.catches.push({
+          species: this.species,
+          count: this.count,
+          pounds: this.pounds,
+          ounces: this.ounces
+        })
+        this.speciesOptions.splice(this.speciesOptions.indexOf(this.species), 1)
+        this.species = ''
+      }
+    },
+    removeCatch: function (index) {
+      this.speciesOptions.push(this.catches[index].species)
+      this.speciesOptions.sort()
+      this.catches.splice(index, 1)
     }
   }
 }

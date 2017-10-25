@@ -19,7 +19,7 @@
 
           <router-link :to="'/return'" v-if="authenticated"
             class="btn btn-primary btn-margin">
-            Submit Return
+            Fill In Return
           </router-link>
 
           <router-link :to="'/admin'" v-if="authenticated && admin"
