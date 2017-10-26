@@ -147,7 +147,7 @@ Fished to time: HH&nbsp;<select v-model="tohh">
     </li>
   </p>
   <p>
-    <textarea v-if="showNote" rows="6" cols="100" placeholder="Detail specimen catches and any other details....."/>
+    <textarea v-if="showNote" rows="6" style="width:100%" placeholder="Detail specimen catches and any other details....."/>
   </p>
   <p>
     <button v-if="!showNote" class="btn btn-primary btn-margin" @click="showNote = true">Add Note</button>
@@ -189,7 +189,7 @@ export default {
         fromdate: new Date(),
         todate: new Date(),
         disabled: {
-          from: new Date(2017, 10, 21)
+          from: new Date()
         }
       },
       showNote: false,
@@ -239,6 +239,9 @@ export default {
         })
         this.speciesOptions.splice(this.speciesOptions.indexOf(this.species), 1)
         this.species = ''
+        this.pounds = 0
+        this.ounces = 0
+        this.count = 0
       }
     },
     removeCatch: function (index) {
