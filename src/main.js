@@ -3,6 +3,9 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import Simplert from 'vue2-simplert-plugin'
+
+Vue.use(Simplert)
 
 Vue.config.productionTip = false
 

@@ -225,11 +225,26 @@ export default {
     },
     add: function () {
       if (this.species === '') {
-        alert('Select a species before adding to your catch list')
+        var obj1 = {
+          title: '',
+          message: 'Select a species before adding to your catch list',
+          type: 'error'
+        }
+        this.$Simplert.open(obj1)
       } else if (this.count < 1) {
-        alert('Add number of ' + this.species + ' caught')
+        var obj2 = {
+          title: '',
+          message: 'Add number of ' + this.species + ' caught',
+          type: 'error'
+        }
+        this.$Simplert.open(obj2)
       } else if (this.pounds < 1 && this.ounces < 1) {
-        alert('Add average weight of ' + this.species + ' caught')
+        var obj3 = {
+          title: '',
+          message: 'Add average weight of ' + this.species + ' caught',
+          type: 'error'
+        }
+        this.$Simplert.open(obj3)
       } else {
         this.catches.push({
           species: this.species,

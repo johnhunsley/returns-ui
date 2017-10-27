@@ -44,6 +44,7 @@
         :authenticated="authenticated"
         :admin="admin">
       </router-view>
+      <simplert></simplert>
     </div>
   </div>
 </template>

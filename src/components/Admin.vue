@@ -58,7 +58,12 @@ export default {
       fishery: '',
       catchTotals: false,
       viewReturns: false,
-      items: [{id: 1, date: '20/10/2017', memberid: 'PP702', name: 'John Hunsley', fishery: 'Wroxeter'}],
+      items: [
+        {id: 1, date: '20/10/2017', memberid: 'PP702', name: 'John Hunsley', fishery: 'Wroxeter'},
+        {id: 2, date: '22/10/2017', memberid: 'PB666', name: 'Bob Smith', fishery: 'Atcham (Below Tern)'},
+        {id: 3, date: '22/10/2017', memberid: 'PF121', name: 'Fred Bloggs', fishery: 'Atcham (Above Tern)'},
+        {id: 4, date: '24/10/2017', memberid: 'PB666', name: 'Bob Smith', fishery: 'Rossall'}
+      ],
       totalPages: 0,
       totalItems: 0,
       colNames: [
@@ -84,8 +89,15 @@ export default {
     getReturns: function () {
 
     },
-    viewReturn: function () {
-
+    viewReturn: function (id) {
+      var obj = {
+        isShown: true,
+        title: 'Return ID ' + id,
+        message: 'message',
+        type: 'success',
+        onClose: this.onClose
+      }
+      this.$Simplert.open(obj)
     }
   }
 }
