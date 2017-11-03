@@ -12,7 +12,7 @@
 </h4>
  <body v-if="authenticated && admin && viewReturns">
   <p>
-    <select v-model="fishery">
+    <select v-model="fishery" @change="getReturns(10, 1, filter)">
       <option value='' selected><b>Aggregate All Fisheries</b></option>
       <option>Wroxeter</option>
       <option>Atcham (Below Tern)</option>
@@ -58,18 +58,13 @@ export default {
       fishery: '',
       catchTotals: false,
       viewReturns: false,
-      items: [
-        {id: 1, date: '20/10/2017', memberid: 'PP702', name: 'John Hunsley', fishery: 'Wroxeter'},
-        {id: 2, date: '22/10/2017', memberid: 'PB666', name: 'Bob Smith', fishery: 'Atcham (Below Tern)'},
-        {id: 3, date: '22/10/2017', memberid: 'PF121', name: 'Fred Bloggs', fishery: 'Atcham (Above Tern)'},
-        {id: 4, date: '24/10/2017', memberid: 'PB666', name: 'Bob Smith', fishery: 'Rossall'}
-      ],
+      items: [],
       totalPages: 0,
       totalItems: 0,
       colNames: [
         {'label': 'ID', 'value': 'id'},
-        {'label': 'Date', 'value': 'date'},
-        {'label': 'Member ID', 'value': 'memberid'},
+        {'label': 'Date', 'value': 'from'},
+        {'label': 'Member ID', 'value': 'memberId'},
         {'label': 'Name', 'value': 'name'},
         {'label': 'Fishery', 'value': 'fishery'}
       ],
@@ -86,14 +81,21 @@ export default {
     }
   },
   methods: {
-    getReturns: function () {
-
+    getReturns: function (pageSize, pageNumber, filter) {
+      this.$http.get('http://localhost:8080/app/returns', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'page': pageNumber, 'size': pageSize, 'fishery': this.fishery, 'filter': filter}}).then(function (response) {
+        console.log(response)
+        this.items = response.data.content
+        this.totalPages = response.data.totalPages
+        this.totalItems = response.data.totalElements
+      }, function (response) {
+        console.log(response)
+      })
     },
     viewReturn: function (id) {
       var obj = {
         isShown: true,
         title: 'Return ID ' + id,
-        message: 'message',
+        message: 'return & catch details here',
         type: 'success',
         onClose: this.onClose
       }
