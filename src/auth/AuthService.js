@@ -21,7 +21,7 @@ export default class AuthService {
     domain: AUTH_CONFIG.domain,
     clientID: AUTH_CONFIG.clientId,
     redirectUri: AUTH_CONFIG.callbackUrl,
-    audience: `https://${AUTH_CONFIG.domain}/userinfo`,
+    audience: AUTH_CONFIG.apiUrl,
     responseType: 'token id_token',
     scope: 'openid profile'
   })
@@ -93,10 +93,10 @@ export default class AuthService {
   }
 
   getNickName () {
-    const namespace = 'nickname'
+    const namespace = 'http://myapp.example.com'
     const idToken = localStorage.getItem('id_token')
     if (idToken) {
-      var nick = decode(idToken)[`${namespace}`] || null
+      var nick = decode(idToken)[`${namespace}/nickname`] || null
       console.log(nick)
       return nick
     }

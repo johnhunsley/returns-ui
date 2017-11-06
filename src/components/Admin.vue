@@ -82,7 +82,8 @@ export default {
   },
   methods: {
     getReturns: function (pageSize, pageNumber, filter) {
-      this.$http.get('http://localhost:8080/app/returns', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'page': pageNumber, 'size': pageSize, 'fishery': this.fishery, 'filter': filter}}).then(function (response) {
+      console.log(localStorage.getItem('access_token'))
+      this.$http.get('http://localhost:8080/app/returns/', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'page': pageNumber, 'size': pageSize, 'fishery': this.fishery, 'filter': filter}}).then(function (response) {
         console.log(response)
         this.items = response.data.content
         this.totalPages = response.data.totalPages

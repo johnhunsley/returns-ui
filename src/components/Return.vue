@@ -152,7 +152,7 @@ Fished to time: HH&nbsp;<select v-model="tohh">
   <p>
     <button v-if="!showNote" class="btn btn-primary btn-margin" @click="showNote = true">Add Note</button>
     <button v-if="showNote" class="btn btn-primary btn-margin" @click="showNote = false">Hide Note</button>
-    <button v-if="catches.length > 0" class="btn btn-primary btn-margin" @click="">Submit Return</button>
+    <button v-if="catches.length > 0" class="btn btn-primary btn-margin" @click="submitReturn()">Submit Return</button>
   </p>
   </div>
 </body>
@@ -247,6 +247,7 @@ export default {
         this.$Simplert.open(obj3)
       } else {
         this.catches.push({
+          class: 'Catch',
           species: this.species,
           count: this.count,
           pounds: this.pounds,
@@ -263,6 +264,31 @@ export default {
       this.speciesOptions.push(this.catches[index].species)
       this.speciesOptions.sort()
       this.catches.splice(index, 1)
+    },
+    submitReturn: function () {
+      var myReturn = {
+        class: 'Return',
+        fishery: this.fishery,
+        catches: this.catches,
+        from: this.state.fromdate,
+        fromhh: this.fromhh,
+        frommm: this.frommm,
+        to: this.state.todate,
+        tohh: this.tohh,
+        tomm: this.tomm
+      }
+      this.$http.post('http://localhost:8080/app/return', myReturn, {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
+        console.log(response)
+        var obj = {
+          isShown: true,
+          message: 'Thank you for submitting your catch return',
+          type: 'success',
+          onClose: this.$router.push('/home')
+        }
+        this.$Simplert.open(obj)
+      }, function (response) {
+        console.log(response)
+      })
     }
   }
 }
