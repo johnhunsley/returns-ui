@@ -147,7 +147,8 @@ Fished to time: HH&nbsp;<select v-model="tohh">
     </li>
   </p>
   <p>
-    <textarea v-if="showNote" rows="6" style="width:100%" placeholder="Detail specimen catches and any other details....."/>
+    <textarea v-if="showNote" v-model="notes" rows="6" style="width:100%" placeholder="Detail specimen catches and any other details....." @keydown="onKeyDown"/>
+    <br/><span v-if="showNote" style="font-size: 8pt"><i>(max 250 characters)</i></span>
   </p>
   <p>
     <button v-if="!showNote" class="btn btn-primary btn-margin" @click="showNote = true">Add Note</button>
@@ -182,6 +183,8 @@ export default {
       count: 0,
       pounds: 0,
       ounces: 0,
+      notes: '',
+      maxnotes: 250,
       speciesOptions: [
         'Barbel', 'Carp', 'Chub', 'Dace', 'Eel', 'Perch', 'Pike', 'Roach'
       ],
@@ -275,7 +278,8 @@ export default {
         frommm: this.frommm,
         to: this.state.todate,
         tohh: this.tohh,
-        tomm: this.tomm
+        tomm: this.tomm,
+        notes: this.notes
       }
       this.$http.post('http://localhost:8080/app/return', myReturn, {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
         console.log(response)
@@ -289,6 +293,12 @@ export default {
       }, function (response) {
         console.log(response)
       })
+    },
+    onKeyDown (evt) {
+      console.log(this.notes.length)
+      if (this.notes.length >= this.maxnotes) {
+        evt.preventDefault()
+      }
     }
   }
 }
