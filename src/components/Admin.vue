@@ -22,7 +22,7 @@
     </select>
   </p>
   <p>
-    <pager :on-search='getReturns' :on-select='viewReturn' :col-names='colNames' :items='items' :total-pages="totalPages" :total-items="totalItems" :no-items-label='noReturns' :filter-placeholder="filterReturns" :select-id='selectedId'/>
+    <pager :filter='filter' :on-search='getReturns' :on-select='viewReturn' :col-names='colNames' :items='items' :total-pages="totalPages" :total-items="totalItems" :no-items-label='noReturns' :filter-placeholder="filterReturns" :select-id='selectedId'/>
   </p>
  </body>
  <body v-if="authenticated && admin && catchTotals">
@@ -61,6 +61,7 @@ export default {
       items: [],
       totalPages: 0,
       totalItems: 0,
+      filter: '',
       colNames: [
         {'label': 'ID', 'value': 'id'},
         {'label': 'Date', 'value': 'from'},
