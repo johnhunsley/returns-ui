@@ -36,8 +36,21 @@
       <option>Montford Bridge</option>
     </select>
   </p>
-  <p>From date: <datepicker :value="state.fromdate" :disabled="state.disabled"></datepicker></p>
-  <p>To date: <datepicker :value="state.fromdate" :disabled="state.disabled"></datepicker></p>
+  <p>From date: <datepicker :value="state.fromdate" :disabled="state.disabled" v-model="fromdate"></datepicker></p>
+  <p>To date: <datepicker :value="state.todate" :disabled="state.disabled" v-model="todate"></datepicker></p>
+  <p><button class="btn btn-primary btn-margin" @click="getStats()">Go</button></p>
+  <p>
+    <table class="statsTable" v-if="stats">
+      <tr>
+        <th><b>Species</b></th>
+        <th><b>Count</b></th>
+      </tr>
+      <tr v-for="stat in stats">
+        <td>{{stat.species}}</td>
+        <td>{{stat.count}}</td>
+      </tr>
+    </table>
+  </p>
  </body>
 </div>
 </template>
@@ -72,6 +85,9 @@ export default {
       noReturns: 'No Returns',
       filterReturns: 'Filter Returns',
       selectedId: 'id',
+      fromdate: new Date(),
+      todate: new Date(),
+      stats: null,
       state: {
         fromdate: new Date(),
         todate: new Date(),
@@ -83,7 +99,6 @@ export default {
   },
   methods: {
     getReturns: function (pageSize, pageNumber, filter) {
-      console.log(localStorage.getItem('access_token'))
       this.$http.get('http://localhost:8080/app/returns/', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'page': pageNumber, 'size': pageSize, 'fishery': this.fishery, 'filter': filter}}).then(function (response) {
         console.log(response)
         this.items = response.data.content
@@ -102,6 +117,28 @@ export default {
         onClose: this.onClose
       }
       this.$Simplert.open(obj)
+    },
+    formatDate: function (date) {
+      var d = new Date(date)
+      var month = '' + (d.getMonth() + 1)
+      var day = '' + d.getDate()
+      var year = d.getFullYear()
+
+      if (month.length < 2) month = '0' + month
+      if (day.length < 2) day = '0' + day
+
+      return [year, month, day].join('-')
+    },
+    getStats: function () {
+      this.stats = null
+      console.log(this.fromdate)
+      console.log(this.todate)
+      this.$http.get('http://localhost:8080/app/returns/stats', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
+        console.log(response)
+        this.stats = response.data
+      }, function (response) {
+        console.log(response)
+      })
     }
   }
 }
@@ -110,5 +147,9 @@ export default {
 <style>
 a {
   cursor: pointer;
+}
+.statsTable {
+  min-width: 25%;
+  max-width: 30%
 }
 </style>

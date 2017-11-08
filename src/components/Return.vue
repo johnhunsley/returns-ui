@@ -21,7 +21,7 @@
   </div>
   <div v-if="fishery">
     <p>Enter details for catches at {{fishery}}</p>
-    <p>Fished from date: <datepicker :value="state.fromdate" :disabled="state.disabled"></datepicker></p>
+    <p>Fished from date: <datepicker :value="state.fromdate" :disabled="state.disabled" v-model="fromdate"></datepicker></p>
     <p>
       Fished from time: HH&nbsp;<select v-model="fromhh">
                       <option value="0" selected>00</option>
@@ -56,7 +56,7 @@
                         <option>45</option>
                       </select>
     </p>
-  <p>Fished to date: <datepicker :value="state.todate" :disabled="state.disabled"></datepicker></p>
+  <p>Fished to date: <datepicker :value="state.todate" :disabled="state.disabled" v-model="todate"></datepicker></p>
 <p>
 Fished to time: HH&nbsp;<select v-model="tohh">
   <option value="0" selected>00</option>
@@ -174,6 +174,8 @@ export default {
   data () {
     return {
       fishery: '',
+      fromdate: new Date(),
+      todate: new Date(),
       fromhh: 0,
       frommm: 0,
       tohh: 0,
@@ -273,10 +275,10 @@ export default {
         class: 'Return',
         fishery: this.fishery,
         catches: this.catches,
-        from: this.state.fromdate,
+        from: this.fromdate,
         fromhh: this.fromhh,
         frommm: this.frommm,
-        to: this.state.todate,
+        to: this.todate,
         tohh: this.tohh,
         tomm: this.tomm,
         notes: this.notes
@@ -285,6 +287,7 @@ export default {
         console.log(response)
         var obj = {
           isShown: true,
+          title: '',
           message: 'Thank you for submitting your catch return',
           type: 'success',
           onClose: this.$router.push('/home')
@@ -295,7 +298,6 @@ export default {
       })
     },
     onKeyDown (evt) {
-      console.log(this.notes.length)
       if (this.notes.length >= this.maxnotes) {
         evt.preventDefault()
       }
