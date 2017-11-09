@@ -24,6 +24,17 @@
   <p>
     <pager :filter='filter' :on-search='getReturns' :on-select='viewReturn' :col-names='colNames' :items='items' :total-pages="totalPages" :total-items="totalItems" :no-items-label='noReturns' :filter-placeholder="filterReturns" :select-id='selectedId'/>
   </p>
+  <modal :showModal="showModal" :closeAction="closeAction">
+    <span slot="header"><b>Catch Return ID</b>&nbsp;{{selectedReturn.id}}</span>
+    <span slot="body">
+      <table>
+        <tr>
+          <td><b>Member ID</b></td>
+          <td>{{selectedReturn.memberId}}</td>
+        </tr>
+      </table>
+    </span>
+  </modal>
  </body>
  <body v-if="authenticated && admin && catchTotals">
   <p>
@@ -58,16 +69,20 @@
 <script>
 import pager from 'vue-pager'
 import datepicker from 'vuejs-datepicker'
+import modal from 'modal-vue'
 
 export default {
   name: 'admin',
   props: ['auth', 'authenticated', 'admin'],
   components: {
     pager,
-    datepicker
+    datepicker,
+    modal
   },
   data () {
     return {
+      showModal: false,
+      selectedReturn: {},
       fishery: '',
       catchTotals: false,
       viewReturns: false,
@@ -109,14 +124,17 @@ export default {
       })
     },
     viewReturn: function (id) {
-      var obj = {
-        isShown: true,
-        title: 'Return ID ' + id,
-        message: 'return & catch details here',
-        type: 'success',
-        onClose: this.onClose
-      }
-      this.$Simplert.open(obj)
+      console.log(id)
+      this.$http.get('http://localhost:8080/app/return/' + id, {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}}).then(function (response) {
+        console.log(response)
+        this.selectedReturn = response.data
+        this.showModal = true
+      }, function (response) {
+        console.log(response)
+      })
+    },
+    closeAction: function () {
+      this.showModal = false
     },
     formatDate: function (date) {
       var d = new Date(date)
