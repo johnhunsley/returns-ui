@@ -27,12 +27,45 @@
   <modal :showModal="showModal" :closeAction="closeAction">
     <span slot="header"><b>Catch Return ID</b>&nbsp;{{selectedReturn.id}}</span>
     <span slot="body">
-      <table>
+      <table class="return-details">
         <tr>
           <td><b>Member ID</b></td>
           <td>{{selectedReturn.memberId}}</td>
         </tr>
+        <tr>
+          <td><b>Name</b></td>
+          <td>{{selectedReturn.name}}</td>
+        </tr>
+        <tr>
+          <td><b>Fishery</b></td>
+          <td>{{selectedReturn.fishery}}</td>
+        </tr>
+        <tr>
+          <td><b>Fished From</b></td>
+          <td>{{selectedReturn.from}}&nbsp;:&nbsp;{{selectedReturn.fromhh}}:{{selectedReturn.frommm}}</td>
+        </tr>
+        <tr>
+          <td><b>Fished To</b></td>
+          <td>{{selectedReturn.to}}&nbsp;:&nbsp;{{selectedReturn.tohh}}:{{selectedReturn.tomm}}</td>
+        </tr>
       </table>
+      <br/>
+      <table v-if="selectedReturn.catches && selectedReturn.catches.length > 0">
+        <tr>
+          <th>Species</th>
+          <th>Count</th>
+          <th>Average Weight</th>
+        </tr>
+        <tr v-for="mycatch in selectedReturn.catches">
+          <td>{{mycatch.species}}</td>
+          <td>{{mycatch.count}}</td>
+          <td>{{mycatch.pounds}}lbs&nbsp;{{mycatch.ounces}}oz</td>
+        </tr>
+      </table>
+      <span v-if="!selectedReturn.catches || selectedReturn.catches.length < 1"><b>Blank!</b></span>
+      <br/>
+      <span v-if="selectedReturn.notes"><b>Notes:</b></span></br>
+      <span v-if="selectedReturn.notes">{{selectedReturn.notes}}</span>
     </span>
   </modal>
  </body>
@@ -169,5 +202,12 @@ a {
 .statsTable {
   min-width: 25%;
   max-width: 30%
+}
+.return-details {
+  min-width: 50%;
+  max-width: 60%
+}
+.return-details td, th {
+  border: 0px
 }
 </style>
