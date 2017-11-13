@@ -147,7 +147,7 @@ export default {
   },
   methods: {
     getReturns: function (pageSize, pageNumber, filter) {
-      this.$http.get('http://localhost:8080/app/returns/', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'page': pageNumber, 'size': pageSize, 'fishery': this.fishery, 'filter': filter}}).then(function (response) {
+      this.$http.get('http://lymm.stateless-services.com:8080/app/returns/', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'page': pageNumber, 'size': pageSize, 'fishery': this.fishery, 'filter': filter}}).then(function (response) {
         console.log(response)
         this.items = response.data.content
         this.totalPages = response.data.totalPages
@@ -158,7 +158,7 @@ export default {
     },
     viewReturn: function (id) {
       console.log(id)
-      this.$http.get('http://localhost:8080/app/return/' + id, {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}}).then(function (response) {
+      this.$http.get('http://lymm.stateless-services.com:8080/app/return/' + id, {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}}).then(function (response) {
         console.log(response)
         this.selectedReturn = response.data
         this.showModal = true
@@ -184,7 +184,7 @@ export default {
       this.stats = null
       console.log(this.fromdate)
       console.log(this.todate)
-      this.$http.get('http://localhost:8080/app/returns/stats', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
+      this.$http.get('http://lymm.stateless-services.com:8080/app/returns/stats', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
         console.log(response)
         this.stats = response.data
       }, function (response) {
