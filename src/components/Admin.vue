@@ -51,14 +51,14 @@
       </table>
       <br/>
       <table v-if="selectedReturn.catches && selectedReturn.catches.length > 0">
-        <tr>
+        <tr v-if="selectedReturn.catches[0].species !== 'BLANK'">
           <th>Species</th>
           <th>Count</th>
-          <th v-if="selectedReturn.catches[0].species !== 'BLANK'">Average Weight</th>
+          <th>Average Weight</th>
         </tr>
         <tr v-for="mycatch in selectedReturn.catches">
           <td>{{mycatch.species}}</td>
-          <td>{{mycatch.count}}</td>
+          <td v-if="mycatch.species !== 'BLANK'">{{mycatch.count}}</td>
           <td v-if="mycatch.species !== 'BLANK'">{{mycatch.pounds}}lbs&nbsp;{{mycatch.ounces}}oz</td>
         </tr>
       </table>
