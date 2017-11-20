@@ -24,7 +24,7 @@
     "sweetalert2": "^6.11.1",
     "vue": "2.3.4",
     "vue-numeric": "^2.2.4",
-    "vue-pager": "github:johnhunsley/vue-pager#1.1",
+    "vue-pager": "github:johnhunsley/vue-pager#1.2",
     "vue-resource": "^1.3.4",
     "vue-router": "2.7.0",
     "vue2-simplert-plugin": "0.0.2",

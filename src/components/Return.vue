@@ -94,11 +94,11 @@ Fished to time: HH&nbsp;<select v-model="tohh">
   </div>
   <div v-if="fishery">
   <p>
-    <table>
+    <table v-if="this.isBlank != true">
       <tr>
         <th>Species</th>
-        <th>Number Caught</th>
-        <th>Average Size</th
+        <th v-if="this.species != 'BLANK'">Number Caught</th>
+        <th v-if="this.species != 'BLANK'">Average Size</th
         <th>&nbsp;&nbsp;</th>
       </tr>
       <tr>
@@ -110,12 +110,12 @@ Fished to time: HH&nbsp;<select v-model="tohh">
             </option>
           </select>
         </td>
-        <td>
+        <td v-if="this.species != 'BLANK'">
           <button @click="decrement">-</button>
           <vue-numeric v-bind:min="0" v-bind:minus="false" v-bind:max="100"  v-model="count" size="1"></vue-numeric>
           <button @click="increment">+</button>
         </td>
-        <td>
+        <td v-if="this.species != 'BLANK'">
           Pounds&nbsp;
           <button @click="decrementP">-</button>
           <vue-numeric v-bind:min="0" v-bind:minus="false" v-bind:max="100"  v-model="pounds" size="1"></vue-numeric>
@@ -139,8 +139,8 @@ Fished to time: HH&nbsp;<select v-model="tohh">
       <tr v-for="(catchx, index) in catches">
         <td>{{catchx.species}}</td>
         <td>{{catchx.count}}</td>
-        <td>{{catchx.pounds}}lbs</td>
-        <td>{{catchx.ounces}}oz</td>
+        <td v-if="catchx.species !== 'BLANK'">{{catchx.pounds}}lbs</td>
+        <td v-if="catchx.species !== 'BLANK'">{{catchx.ounces}}oz</td>
         <td><button class="btn btn-primary btn-margin" @click="removeCatch(index)">Remove</button></td>
       </tr>
     </table>
@@ -187,8 +187,12 @@ export default {
       ounces: 0,
       notes: '',
       maxnotes: 250,
+      isBlank: false,
+      fixedSpeciesOptions: [
+        'BLANK', 'Barbel', 'Carp', 'Chub', 'Dace', 'Eel', 'Perch', 'Pike', 'Roach'
+      ],
       speciesOptions: [
-        'Barbel', 'Carp', 'Chub', 'Dace', 'Eel', 'Perch', 'Pike', 'Roach'
+        'BLANK', 'Barbel', 'Carp', 'Chub', 'Dace', 'Eel', 'Perch', 'Pike', 'Roach'
       ],
       state: {
         fromdate: new Date(),
@@ -236,14 +240,14 @@ export default {
           type: 'error'
         }
         this.$Simplert.open(obj1)
-      } else if (this.count < 1) {
+      } else if (this.species !== 'BLANK' && this.count < 1) {
         var obj2 = {
           title: '',
           message: 'Add number of ' + this.species + ' caught',
           type: 'error'
         }
         this.$Simplert.open(obj2)
-      } else if (this.pounds < 1 && this.ounces < 1) {
+      } else if (this.species !== 'BLANK' && this.pounds < 1 && this.ounces < 1) {
         var obj3 = {
           title: '',
           message: 'Add average weight of ' + this.species + ' caught',
@@ -251,13 +255,22 @@ export default {
         }
         this.$Simplert.open(obj3)
       } else {
-        this.catches.push({
-          class: 'Catch',
-          species: this.species,
-          count: this.count,
-          pounds: this.pounds,
-          ounces: this.ounces
-        })
+        if (this.species === 'BLANK') {
+          this.catches = [{
+            class: 'Catch',
+            species: this.species,
+            count: 1
+          }]
+          this.isBlank = true
+        } else {
+          this.catches.push({
+            class: 'Catch',
+            species: this.species,
+            count: this.count,
+            pounds: this.pounds,
+            ounces: this.ounces
+          })
+        }
         this.speciesOptions.splice(this.speciesOptions.indexOf(this.species), 1)
         this.species = ''
         this.pounds = 0
@@ -269,6 +282,13 @@ export default {
       this.speciesOptions.push(this.catches[index].species)
       this.speciesOptions.sort()
       this.catches.splice(index, 1)
+
+      if (this.isBlank) {
+        this.isBlank = false
+
+        // reset the species list
+        this.speciesOptions = JSON.parse(JSON.stringify(this.fixedSpeciesOptions))
+      }
     },
     submitReturn: function () {
       var myReturn = {
