@@ -68,33 +68,7 @@
     </span>
   </modal>
  </body>
- <body v-if="authenticated && admin && catchTotals">
-  <p>
-    <select v-model="fishery">
-      <option value='' selected><b>Aggregate All Fisheries</b></option>
-      <option>Wroxeter</option>
-      <option>Atcham (Below Tern)</option>
-      <option>Atcham (Above Tern)</option>
-      <option>Rossall Grange</option>
-      <option>Montford Bridge</option>
-    </select>
-  </p>
-  <p>From date: <datepicker :value="state.fromdate" :disabled="state.disabled" v-model="fromdate"></datepicker></p>
-  <p>To date: <datepicker :value="state.todate" :disabled="state.disabled" v-model="todate"></datepicker></p>
-  <p><button class="btn btn-primary btn-margin" @click="getStats()">Go</button></p>
-  <p>
-    <table class="statsTable" v-if="stats">
-      <tr>
-        <th><b>Species</b></th>
-        <th><b>Count</b></th>
-      </tr>
-      <tr v-for="stat in stats">
-        <td>{{stat.species}}</td>
-        <td>{{stat.count}}</td>
-      </tr>
-    </table>
-  </p>
- </body>
+ <stats v-if="authenticated && admin && catchTotals" />
 </div>
 </template>
 
@@ -102,6 +76,7 @@
 import pager from 'vue-pager'
 import datepicker from 'vuejs-datepicker'
 import modal from 'modal-vue'
+import stats from '@/components/Stats'
 
 export default {
   name: 'admin',
@@ -109,7 +84,8 @@ export default {
   components: {
     pager,
     datepicker,
-    modal
+    modal,
+    stats
   },
   data () {
     return {
@@ -134,7 +110,6 @@ export default {
       selectedId: 'id',
       fromdate: new Date(),
       todate: new Date(),
-      stats: null,
       state: {
         fromdate: new Date(),
         todate: new Date(),
@@ -167,28 +142,6 @@ export default {
     },
     closeAction: function () {
       this.showModal = false
-    },
-    formatDate: function (date) {
-      var d = new Date(date)
-      var month = '' + (d.getMonth() + 1)
-      var day = '' + d.getDate()
-      var year = d.getFullYear()
-
-      if (month.length < 2) month = '0' + month
-      if (day.length < 2) day = '0' + day
-
-      return [year, month, day].join('-')
-    },
-    getStats: function () {
-      this.stats = null
-      console.log(this.fromdate)
-      console.log(this.todate)
-      this.$http.get('http://lymm.stateless-services.com:8080/app/returns/stats', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
-        console.log(response)
-        this.stats = response.data
-      }, function (response) {
-        console.log(response)
-      })
     }
   }
 }
