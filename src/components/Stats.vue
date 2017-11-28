@@ -13,8 +13,9 @@
       </p>
       <p>From date: <datepicker :value="state.fromdate" :disabled="state.disabled" v-model="fromdate"></datepicker></p>
       <p>To date: <datepicker :value="state.todate" :disabled="state.disabled" v-model="todate"></datepicker></p>
-      <p><button class="btn btn-primary btn-margin" @click="getStats()">Go</button></p>
-      <modal :showModal="showModal" :closeAction="closeAction">
+      <p><button class="btn btn-primary btn-margin" @click="getBasicStats()">Show Stats</button>
+         <button class="btn btn-primary btn-margin" @click="getBarChart()">Bar Chart</button></p>
+      <modal :showModal="showStatsModal" :closeAction="closeAction">
         <span slot="header"><b>Catch Stats</b>&nbsp;{{this.formatDate(fromdate)}}&nbsp;-&nbsp;{{this.formatDate(todate)}}</span>
         <span slot="body">
           <table class="statsTable" v-if="stats">
@@ -29,6 +30,13 @@
           </table>
         </span>
       </modal>
+      <modal :showModal="showBarModal" :closeAction="closeAction">
+        <span slot="header"><b>Catch Stats</b>&nbsp;{{this.formatDate(fromdate)}}&nbsp;-&nbsp;{{this.formatDate(todate)}}</span>
+        <span slot="body">
+        <barchart
+          :chart-data="datacollection"></barchart>
+        </span>
+      </modal>
     </body>
   </div>
 </template>
@@ -37,20 +45,23 @@
 import pager from 'vue-pager'
 import datepicker from 'vuejs-datepicker'
 import modal from 'modal-vue'
+import barchart from '@/components/BarChart'
 
 export default {
   name: 'stats',
   components: {
     pager,
     datepicker,
-    modal
+    modal,
+    barchart
   },
   data () {
     return {
       fishery: '',
       fromdate: new Date(),
       todate: new Date(),
-      showModal: false,
+      showStatsModal: false,
+      showBarModal: false,
       stats: null,
       state: {
         fromdate: new Date(),
@@ -58,7 +69,8 @@ export default {
         disabled: {
           from: new Date()
         }
-      }
+      },
+      datacollection: null
     }
   },
   methods: {
@@ -66,16 +78,49 @@ export default {
       this.stats = null
       console.log(this.fromdate)
       console.log(this.todate)
-      this.$http.get('http://lymm.stateless-services.com:8080/app/returns/stats', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
+      this.$http.get('http://localhost:8080/app/returns/stats', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
         console.log(response)
         this.stats = response.data
-        this.showModal = true
       }, function (response) {
         console.log(response)
       })
     },
+    getBasicStats: function () {
+      this.getStats()
+      this.showStatsModal = true
+    },
+    getBarChart: function () {
+      this.$http.get('http://localhost:8080/app/returns/stats', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
+        console.log(response)
+
+        var mylabels = []
+        var mydata = []
+
+        for (var i = 0; i < response.data.length; i++) {
+          console.log(response.data[i])
+          mylabels.push(response.data[i].species)
+          mydata.push(response.data[i].count)
+        }
+
+        this.datacollection = {
+          labels: mylabels,
+          datasets: [
+            {
+              label: 'Total Captures',
+              backgroundColor: '#5489dd',
+              data: mydata
+            }
+          ]
+        }
+      }, function (response) {
+        console.log(response)
+      })
+
+      this.showBarModal = true
+    },
     closeAction: function () {
-      this.showModal = false
+      this.showStatsModal = false
+      this.showBarModal = false
     },
     formatDate: function (date) {
       var d = new Date(date)
@@ -91,3 +136,19 @@ export default {
   }
 }
 </script>
+<style>
+<style>
+.statsTable {
+  min-width: 90%;
+  max-width: 90%
+}
+.return-details {
+  min-width: 50%;
+  max-width: 60%
+}
+.return-details td, th {
+  border: 0px
+}
+</style>
+
+</style>
