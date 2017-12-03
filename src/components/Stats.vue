@@ -13,8 +13,11 @@
       </p>
       <p>From date: <datepicker :value="state.fromdate" :disabled="state.disabled" v-model="fromdate"></datepicker></p>
       <p>To date: <datepicker :value="state.todate" :disabled="state.disabled" v-model="todate"></datepicker></p>
-      <p><button class="btn btn-primary btn-margin" @click="getBasicStats()">Show Stats</button>
-         <button class="btn btn-primary btn-margin" @click="getBarChart()">Bar Chart</button></p>
+      <p>
+        <button class="btn btn-primary btn-margin" @click="getBasicStats()">Show Stats</button>
+        <button class="btn btn-primary btn-margin" @click="getBarChart()">Bar Chart</button>
+        <button class="btn btn-primary btn-margin" @click="getPieChart()">Pie Chart</button>
+      </p>
       <modal :showModal="showStatsModal" :closeAction="closeAction">
         <span slot="header"><b>Catch Stats</b>&nbsp;{{this.formatDate(fromdate)}}&nbsp;-&nbsp;{{this.formatDate(todate)}}</span>
         <span slot="body">
@@ -37,6 +40,12 @@
           :chart-data="datacollection"></barchart>
         </span>
       </modal>
+      <modal :showModal="showPieModal" :closeAction="closeAction">
+        <span slot="header"><b>Catch Percentages</b>&nbsp;{{this.formatDate(fromdate)}}&nbsp;-&nbsp;{{this.formatDate(todate)}}</span>
+          <span slot="body">
+            <piechart :chart-data="datacollection"></piechart>
+        </span>
+      </modal>
     </body>
   </div>
 </template>
@@ -46,6 +55,7 @@ import pager from 'vue-pager'
 import datepicker from 'vuejs-datepicker'
 import modal from 'modal-vue'
 import barchart from '@/components/BarChart'
+import piechart from '@/components/PieChart'
 
 export default {
   name: 'stats',
@@ -53,7 +63,8 @@ export default {
     pager,
     datepicker,
     modal,
-    barchart
+    barchart,
+    piechart
   },
   data () {
     return {
@@ -62,6 +73,7 @@ export default {
       todate: new Date(),
       showStatsModal: false,
       showBarModal: false,
+      showPieModal: false,
       stats: null,
       state: {
         fromdate: new Date(),
@@ -70,7 +82,15 @@ export default {
           from: new Date()
         }
       },
-      datacollection: null
+      datacollection: {
+        labels: [],
+        datasets: [
+          {
+            backgroundColor: [],
+            data: []
+          }
+        ]
+      }
     }
   },
   methods: {
@@ -107,7 +127,7 @@ export default {
           datasets: [
             {
               label: 'Total Captures',
-              backgroundColor: '#5489dd',
+              backgroundColor: '#10CF58',
               data: mydata
             }
           ]
@@ -118,9 +138,58 @@ export default {
 
       this.showBarModal = true
     },
+    getPieChart: function () {
+      this.$http.get('http://localhost:8080/app/returns/stats', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
+        console.log(response)
+        var mylabels = [response.data.length]
+        var mydata = [response.data.length]
+        var backgroundColor = [response.data.length]
+
+        // work out percentages
+        var total = 0
+
+        for (var i = 0; i < response.data.length; i++) {
+          total += response.data[i].count
+        }
+
+        console.log(total)
+
+        for (var k = 0; k < response.data.length; k++) {
+          var item = response.data[k]
+          mylabels[k] = item.species
+          var count = Math.floor(item.count)
+          mydata[k] = Math.floor((count / total) * 100)
+          backgroundColor[k] = '#' + Math.random().toString(16).slice(2, 8).toUpperCase()
+        }
+
+        this.datacollection = {
+          labels: mylabels,
+          datasets: [
+            {
+              backgroundColor: backgroundColor,
+              data: mydata
+            }
+          ]
+        }
+      }, function (response) {
+        console.log(response)
+      })
+
+      this.showPieModal = true
+    },
     closeAction: function () {
       this.showStatsModal = false
       this.showBarModal = false
+      this.showPieModal = false
+      this.datacollection = {
+        labels: [],
+        datasets: [
+          {
+            backgroundColor: [],
+            data: []
+          }
+        ]
+      }
     },
     formatDate: function (date) {
       var d = new Date(date)
