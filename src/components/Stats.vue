@@ -17,6 +17,7 @@
         <button class="btn btn-primary btn-margin" @click="getBasicStats()">Show Stats</button>
         <button class="btn btn-primary btn-margin" @click="getBarChart()">Bar Chart</button>
         <button class="btn btn-primary btn-margin" @click="getPieChart()">Pie Chart</button>
+        <button class="btn btn-primary btn-margin" @click="getSessionCount()">Count Sessions</button>
       </p>
       <modal :showModal="showStatsModal" :closeAction="closeAction">
         <span slot="header"><b>Catch Stats</b>&nbsp;{{this.formatDate(fromdate)}}&nbsp;-&nbsp;{{this.formatDate(todate)}}</span>
@@ -44,6 +45,13 @@
         <span slot="header"><b>Catch Percentages</b>&nbsp;{{this.formatDate(fromdate)}}&nbsp;-&nbsp;{{this.formatDate(todate)}}</span>
           <span slot="body">
             <piechart :chart-data="datacollection"></piechart>
+        </span>
+      </modal>
+      <modal :showModal="showSessionsCount" :closeAction="closeAction">
+        <span slot="header"><b>Number of Sessions</b>&nbsp;{{this.formatDate(fromdate)}}&nbsp;-&nbsp;{{this.formatDate(todate)}}</span>
+          <span slot="body">
+            <barchart
+          :chart-data="datacollection"></barchart>
         </span>
       </modal>
     </body>
@@ -74,6 +82,7 @@ export default {
       showStatsModal: false,
       showBarModal: false,
       showPieModal: false,
+      showSessionsCount: false,
       stats: null,
       state: {
         fromdate: new Date(),
@@ -177,10 +186,40 @@ export default {
 
       this.showPieModal = true
     },
+    getSessionCount: function () {
+      this.$http.get('http://localhost:8080/app/returns/sessions', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
+        console.log(response)
+
+        var mylabels = []
+        var mydata = []
+
+        for (var i = 0; i < response.data.length; i++) {
+          console.log(response.data[i])
+          mylabels.push(i)
+          mydata.push(response.data[i])
+        }
+
+        this.datacollection = {
+          labels: mylabels,
+          datasets: [
+            {
+              label: 'Total Sessions',
+              backgroundColor: '#10CF58',
+              data: mydata
+            }
+          ]
+        }
+      }, function (response) {
+        console.log(response)
+      })
+
+      this.showSessionsCount = true
+    },
     closeAction: function () {
       this.showStatsModal = false
       this.showBarModal = false
       this.showPieModal = false
+      this.showSessionsCount = false
       this.datacollection = {
         labels: [],
         datasets: [
