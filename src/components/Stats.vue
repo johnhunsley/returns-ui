@@ -195,8 +195,8 @@ export default {
 
         for (var i = 0; i < response.data.length; i++) {
           console.log(response.data[i])
-          mylabels.push(i)
-          mydata.push(response.data[i])
+          mylabels.push(response.data[i].dayStartDate)
+          mydata.push(response.data[i].count)
         }
 
         this.datacollection = {
