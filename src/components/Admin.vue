@@ -14,11 +14,9 @@
   <p>
     <select v-model="fishery" @change="getReturns(10, 1, filter)">
       <option value='' selected><b>Aggregate All Fisheries</b></option>
-      <option>Wroxeter</option>
-      <option>Atcham (Below Tern)</option>
-      <option>Atcham (Above Tern)</option>
-      <option>Rossall Grange</option>
-      <option>Montford Bridge</option>
+      <option v-for="fishery in fisheries" v-bind:value="fishery.lookupValue">
+        {{ fishery.lookupValue }}
+      </option>
     </select>
   </p>
   <p>
@@ -91,6 +89,7 @@ export default {
     return {
       showModal: false,
       selectedReturn: {},
+      fisheries: [],
       fishery: '',
       catchTotals: false,
       viewReturns: false,
@@ -119,6 +118,9 @@ export default {
       }
     }
   },
+  mounted () {
+    this.loadFisheries()
+  },
   methods: {
     getReturns: function (pageSize, pageNumber, filter) {
       this.$http.get('http://localhost:8080/app/returns/', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'page': pageNumber, 'size': pageSize, 'fishery': this.fishery, 'filter': filter}}).then(function (response) {
@@ -142,6 +144,14 @@ export default {
     },
     closeAction: function () {
       this.showModal = false
+    },
+    loadFisheries: function () {
+      this.$http.get('http://localhost:8080/app/lookup/FISHERY', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
+        console.log(response)
+        this.fisheries = response.data
+      }, function (response) {
+        console.log(response)
+      })
     }
   }
 }

@@ -4,11 +4,9 @@
       <p>
       <select v-model="fishery">
         <option value='' selected><b>Aggregate All Fisheries</b></option>
-        <option>Wroxeter</option>
-        <option>Atcham (Below Tern)</option>
-        <option>Atcham (Above Tern)</option>
-        <option>Rossall Grange</option>
-        <option>Montford Bridge</option>
+        <option v-for="fishery in fisheries" v-bind:value="fishery.lookupValue">
+          {{ fishery.lookupValue }}
+        </option>
       </select>
       </p>
       <p>From date: <datepicker :value="state.fromdate" :disabled="state.disabled" v-model="fromdate"></datepicker></p>
@@ -76,6 +74,7 @@ export default {
   },
   data () {
     return {
+      fisheries: [],
       fishery: '',
       fromdate: new Date(),
       todate: new Date(),
@@ -101,6 +100,9 @@ export default {
         ]
       }
     }
+  },
+  mounted () {
+    this.loadFisheries()
   },
   methods: {
     getStats: function () {
@@ -194,7 +196,6 @@ export default {
         var mydata = []
 
         for (var i = 0; i < response.data.length; i++) {
-          console.log(response.data[i])
           mylabels.push(response.data[i].dayStartDate)
           mydata.push(response.data[i].count)
         }
@@ -240,6 +241,14 @@ export default {
       if (day.length < 2) day = '0' + day
 
       return [year, month, day].join('-')
+    },
+    loadFisheries: function () {
+      this.$http.get('http://localhost:8080/app/lookup/FISHERY', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
+        console.log(response)
+        this.fisheries = response.data
+      }, function (response) {
+        console.log(response)
+      })
     }
   }
 }

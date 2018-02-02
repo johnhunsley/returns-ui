@@ -11,11 +11,9 @@
     <p>
       <select v-model="fishery">
         <option disabled selected>select fishery</option>
-        <option>Wroxeter</option>
-        <option>Atcham (Below Tern)</option>
-        <option>Atcham (Above Tern)</option>
-        <option>Rossall Grange</option>
-        <option>Montford Bridge</option>
+        <option v-for="fishery in fisheries" v-bind:value="fishery.lookupValue">
+          {{ fishery.lookupValue }}
+        </option>
       </select>
     </p>
   </div>
@@ -174,6 +172,7 @@ export default {
   data () {
     return {
       fishery: '',
+      fisheries: [],
       fromdate: new Date(),
       todate: new Date(),
       fromhh: 0,
@@ -204,6 +203,9 @@ export default {
       showNote: false,
       note: ''
     }
+  },
+  mounted () {
+    this.loadFisheries()
   },
   methods: {
     getSource: function () {
@@ -321,6 +323,14 @@ export default {
       if (this.notes.length >= this.maxnotes) {
         evt.preventDefault()
       }
+    },
+    loadFisheries: function () {
+      this.$http.get('http://localhost:8080/app/lookup/FISHERY', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
+        console.log(response)
+        this.fisheries = response.data
+      }, function (response) {
+        console.log(response)
+      })
     }
   }
 }
