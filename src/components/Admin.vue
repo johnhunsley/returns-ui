@@ -123,7 +123,7 @@ export default {
   },
   methods: {
     getReturns: function (pageSize, pageNumber, filter) {
-      this.$http.get('http://localhost:8080/app/returns/', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'page': pageNumber, 'size': pageSize, 'fishery': this.fishery, 'filter': filter}}).then(function (response) {
+      this.$http.get('http://lymm.stateless-services.com:8080/app/returns/', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'page': pageNumber, 'size': pageSize, 'fishery': this.fishery, 'filter': filter}}).then(function (response) {
         console.log(response)
         this.items = response.data.content
         this.totalPages = response.data.totalPages
@@ -134,7 +134,7 @@ export default {
     },
     viewReturn: function (id) {
       console.log(id)
-      this.$http.get('http://localhost:8080/app/return/' + id, {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}}).then(function (response) {
+      this.$http.get('http://lymm.stateless-services.com:8080/app/return/' + id, {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}}).then(function (response) {
         console.log(response)
         this.selectedReturn = response.data
         this.showModal = true
@@ -146,7 +146,7 @@ export default {
       this.showModal = false
     },
     loadFisheries: function () {
-      this.$http.get('http://localhost:8080/app/lookup/FISHERY', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
+      this.$http.get('http://lymm.stateless-services.com:8080/app/lookup/FISHERY', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
         console.log(response)
         this.fisheries = response.data
       }, function (response) {

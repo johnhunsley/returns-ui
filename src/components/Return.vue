@@ -305,7 +305,7 @@ export default {
         tomm: this.tomm,
         notes: this.notes
       }
-      this.$http.post('http://localhost:8080/app/return', myReturn, {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
+      this.$http.post('http://lymm.stateless-services.com:8080/app/return', myReturn, {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
         console.log(response)
         var obj = {
           isShown: true,
@@ -325,7 +325,7 @@ export default {
       }
     },
     loadFisheries: function () {
-      this.$http.get('http://localhost:8080/app/lookup/FISHERY', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
+      this.$http.get('http://lymm.stateless-services.com:8080/app/lookup/FISHERY', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
         console.log(response)
         this.fisheries = response.data
       }, function (response) {
