@@ -6,5 +6,4 @@ yarn-error.log
 test/unit/coverage
 test/e2e/reports
 selenium-debug.log
-auth0-variables.js
 .env
