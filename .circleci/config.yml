@@ -1,8 +1,6 @@
 version: 2
 jobs:
   build-job:
-    docker:
-      - image: my-image
     working_directory: /
     steps:
       - run: npm run build
