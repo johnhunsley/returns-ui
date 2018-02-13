@@ -25,12 +25,12 @@ Alternatively, when running this application from Node using the server.js file,
 
  ```
 app.use(function(req, res, next) {
-    if (req.url == '/callback') {
-      res.redirect('/index.html');
-    } else {
-      next();
-    }
-});
+     if (req.url == '/callback') {
+       res.sendfile(__dirname + '/dist/index.html');
+     } else {
+       next();
+     }
+ });
  ```
 
 

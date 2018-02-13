@@ -62,6 +62,7 @@ import datepicker from 'vuejs-datepicker'
 import modal from 'modal-vue'
 import barchart from '@/components/BarChart'
 import piechart from '@/components/PieChart'
+import {API_CONFIG} from './api-variables.js'
 
 export default {
   name: 'stats',
@@ -109,7 +110,7 @@ export default {
       this.stats = null
       console.log(this.fromdate)
       console.log(this.todate)
-      this.$http.get('http://lymm.stateless-services.com:8080/app/returns/stats', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
+      this.$http.get(API_CONFIG.baseUrl + '/app/returns/stats', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
         console.log(response)
         this.stats = response.data
       }, function (response) {
@@ -121,7 +122,7 @@ export default {
       this.showStatsModal = true
     },
     getBarChart: function () {
-      this.$http.get('http://lymm.stateless-services.com:8080/app/returns/stats', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
+      this.$http.get(API_CONFIG.baseUrl + '/app/returns/stats', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
         console.log(response)
 
         var mylabels = []
@@ -150,7 +151,7 @@ export default {
       this.showBarModal = true
     },
     getPieChart: function () {
-      this.$http.get('http://lymm.stateless-services.com:8080/app/returns/stats', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
+      this.$http.get(API_CONFIG.baseUrl + '/app/returns/stats', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
         console.log(response)
         var mylabels = [response.data.length]
         var mydata = [response.data.length]
@@ -189,7 +190,7 @@ export default {
       this.showPieModal = true
     },
     getSessionCount: function () {
-      this.$http.get('http://lymm.stateless-services.com:8080/app/returns/sessions', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
+      this.$http.get(API_CONFIG.baseUrl + '/app/returns/sessions', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}, params: {'fishery': this.fishery, 'toDate': this.formatDate(this.todate), 'fromDate': this.formatDate(this.fromdate)}}).then(function (response) {
         console.log(response)
 
         var mylabels = []
@@ -243,7 +244,7 @@ export default {
       return [year, month, day].join('-')
     },
     loadFisheries: function () {
-      this.$http.get('http://lymm.stateless-services.com:8080/app/lookup/FISHERY', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
+      this.$http.get(API_CONFIG.baseUrl + '/app/lookup/FISHERY', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
         console.log(response)
         this.fisheries = response.data
       }, function (response) {

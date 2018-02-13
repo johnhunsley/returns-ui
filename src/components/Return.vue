@@ -161,6 +161,7 @@ Fished to time: HH&nbsp;<select v-model="tohh">
 <script>
 import datepicker from 'vuejs-datepicker'
 import VueNumeric from 'vue-numeric'
+import {API_CONFIG} from './api-variables.js'
 
 export default {
   name: 'return',
@@ -305,7 +306,7 @@ export default {
         tomm: this.tomm,
         notes: this.notes
       }
-      this.$http.post('http://lymm.stateless-services.com:8080/app/return', myReturn, {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
+      this.$http.post(API_CONFIG.baseUrl + '/app/return', myReturn, {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
         console.log(response)
         var obj = {
           isShown: true,
@@ -325,7 +326,7 @@ export default {
       }
     },
     loadFisheries: function () {
-      this.$http.get('http://lymm.stateless-services.com:8080/app/lookup/FISHERY', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
+      this.$http.get(API_CONFIG.baseUrl + '/app/lookup/FISHERY', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
         console.log(response)
         this.fisheries = response.data
       }, function (response) {
