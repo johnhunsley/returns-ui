@@ -5,7 +5,7 @@ app = express();
 app.use(serveStatic(__dirname + "/dist"));
 app.use(function(req, res, next) {
     if (req.url == '/callback') {
-      res.url = '/index.html';
+      req.url = '/index.html';
       next();
     } else {
       next();
