@@ -23,4 +23,14 @@ Vue.js UI for catch returns with Auth0 authentication and authorization
 Alternatively, when running this application from Node using the server.js file, we must add configuration to do the same
  with the express server.
 
+ ```
+app.use(function(req, res, next) {
+    if (req.url == '/callback') {
+      res.redirect('/index.html');
+    } else {
+      next();
+    }
+});
+ ```
+
 
