@@ -5,8 +5,7 @@ app = express();
 app.use(serveStatic(__dirname + "/dist"));
 app.use(function(req, res, next) {
     if (req.url == '/callback') {
-      req.url = '/index.html';
-      next();
+      response.sendfile(__dirname + '/index.html');
     } else {
       next();
     }
