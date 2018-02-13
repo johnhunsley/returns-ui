@@ -3,6 +3,13 @@ var path = require('path');
 var serveStatic = require('serve-static');
 app = express();
 app.use(serveStatic(__dirname + "/dist"));
+app.use(function(req, res, next) {
+    if (req.url == '/callback') {
+      next();
+    } else {
+      res.redirect('/index.html');
+    }
+});
 var port = process.env.PORT || 80;
 app.listen(port);
 console.log('server started : '+ port);
