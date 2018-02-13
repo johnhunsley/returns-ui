@@ -1,7 +1,7 @@
 # returns-ui
 Vue.js UI for catch returns with Auth0 authentication and authorization
 
-# Redirect traffic to index for external mapped request
+# Rewrite URL for traffic to mapped URL from external request
  Because this is a single page app which uses a third party identity provider (Auth0) authentication requests are
  forwarded to an Auth0 host page. We supply a callback URL to the host page which it forwards to upon a successfuly auth
  That URL is a mapped component, within out Vue-router and so we must ensure that requests from external sources, such
