@@ -10,7 +10,7 @@
   <div >
     <p>
       <select v-model="fishery">
-        <option disabled selected>select fishery</option>
+        <option value='' disabled selected>select fishery</option>
         <option v-for="fishery in fisheries" v-bind:value="fishery.lookupValue">
           {{ fishery.lookupValue }}
         </option>
@@ -188,12 +188,8 @@ export default {
       notes: '',
       maxnotes: 250,
       isBlank: false,
-      fixedSpeciesOptions: [
-        'BLANK', 'Barbel', 'Carp', 'Chub', 'Dace', 'Eel', 'Perch', 'Pike', 'Roach'
-      ],
-      speciesOptions: [
-        'BLANK', 'Barbel', 'Carp', 'Chub', 'Dace', 'Eel', 'Perch', 'Pike', 'Roach'
-      ],
+      fixedSpeciesOptions: [],
+      speciesOptions: [],
       state: {
         fromdate: new Date(),
         todate: new Date(),
@@ -207,6 +203,7 @@ export default {
   },
   mounted () {
     this.loadFisheries()
+    this.loadSpecies()
   },
   methods: {
     getSource: function () {
@@ -329,6 +326,21 @@ export default {
       this.$http.get(API_CONFIG.baseUrl + '/app/lookup/FISHERY', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
         console.log(response)
         this.fisheries = response.data
+      }, function (response) {
+        console.log(response)
+      })
+    },
+    loadSpecies: function () {
+      this.$http.get(API_CONFIG.baseUrl + '/app/lookup/SPECIES', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('access_token'), 'Content-Type': 'application/json'}}).then(function (response) {
+        console.log(response)
+        var species = []
+
+        for (var i = 0; i < response.data.length; i++) {
+          species[i] = response.data[i].lookupValue
+        }
+
+        this.speciesOptions = species
+        this.fixedSpeciesOptions = JSON.parse(JSON.stringify(species))
       }, function (response) {
         console.log(response)
       })
